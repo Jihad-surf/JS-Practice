@@ -1,0 +1,15 @@
+.btn_cor{
+    border: none;
+    outline: none;
+    text-decoration: none;
+    background-color: #ffff;
+}
+.botoes{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 500px;
+}
+.btn_cor.active{
+    background-color: blueviolet;
+}
