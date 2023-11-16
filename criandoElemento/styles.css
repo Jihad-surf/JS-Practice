@@ -1,0 +1,6 @@
+.tarefas__form{
+    display: none;
+}
+.tarefas__form.visivel {
+    display: block;
+}

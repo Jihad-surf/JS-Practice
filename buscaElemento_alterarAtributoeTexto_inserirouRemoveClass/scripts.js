@@ -1,3 +1,4 @@
+/* Buscando elementos*/
 const body = document.querySelector("body")
 const btns = document.querySelectorAll('.btn_cor')
 
