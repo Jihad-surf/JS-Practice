@@ -10,18 +10,14 @@ btn_cancelar.addEventListener('click', () => {
     tarefas_form.classList.toggle('visivel')
     document.querySelector('#texto').value = "";
 })
-
+ 
 /**Cria uma tarefa nova */
 function criarTarefa() {
     var text_inserido = document.querySelector('#texto').value
     if (text_inserido.trim() === "") {
-        alert("Por favor, insira uma tarefa antes de salvar.");
+        alert("Por favor, insira um texto antes de salvar.");
         return;
     }
-    /* crio o elemento de elemento de lista */
-    var listItem = document.createElement('li')
-    listItem.classList.add('tarefas__item')
-    
     /**crio o texto e o checkbox */
     var text = document.createElement('p')
     text.textContent = text_inserido
@@ -29,62 +25,71 @@ function criarTarefa() {
     checkbox.type = "checkbox";
     checkbox.checked = false;
 
-    /**adiono no elemento o texto e o checkbox */
-    listItem.appendChild(text)
-    listItem.appendChild(checkbox)
-
-    var lista_tarefa = document.querySelector('.tarefas__list')
-    lista_tarefa.appendChild(listItem)
-    saveTasks(text_inserido, checkbox);
+    saveTasks(text_inserido, checkbox); //salva
     document.querySelector('#texto').value = "";
+    location.reload()
 }
 
 function saveTasks(text, checkbox) {
+    // Criando um objeto com duas propiedades
     var latestTask = {
         description: text,
         completed: checkbox.checked
     }
     // Obtenha as tarefas existentes do localStorage
     var savedTasks = localStorage.getItem("tasks");
-    var tasks = savedTasks ? JSON.parse(savedTasks) : [];
+    var tasks;
+
+    if (savedTasks) {
+    // Se houver dados armazenados, converte esses dados para um objeto JavaScript
+    tasks = JSON.parse(savedTasks);
+    } else {
+    // Se não houver dados, inicializa tasks como um array vazio
+    tasks = [];
+    }
+    //a condição acima pode ser substituida por var tasks = savedTasks ? JSON.parse(savedTasks) : []; 
 
     // Adicione a última tarefa ao array de tarefas
     tasks.push(latestTask);
-
     // Salve o array atualizado no localStorage
     localStorage.setItem("tasks", JSON.stringify(tasks));
 }
+
 function loadTasks() {
-    var taskList = document.getElementById("taskList");
+    var taskList = document.querySelector('.tarefas__list')
     var savedTasks = localStorage.getItem("tasks");
 
+    // se tiver dados, transforma em objetos js e faz um for para cada objeto e cria cada um dos objetos
     if (savedTasks) {
         var tasks = JSON.parse(savedTasks);
-
-        tasks.forEach(function(task) {
+        tasks.forEach((task, index) =>{
             var listItem = document.createElement("li");
             listItem.className = "task";
 
             var checkbox = document.createElement("input");
             checkbox.type = "checkbox";
             checkbox.checked = task.completed;
-            checkbox.addEventListener("change", function() {
-                saveTasks();
+            checkbox.addEventListener('change', () => {
+                // Atualiza o estado da tarefa no localStorage se ele for mudado
+                tasks[index].completed = checkbox.checked;
+                localStorage.setItem('tasks', JSON.stringify(tasks));
             });
 
-            var taskDescription = document.createElement("span");
+            var taskDescription = document.createElement("p");
             taskDescription.textContent = task.description;
 
-            listItem.appendChild(checkbox);
             listItem.appendChild(taskDescription);
-
+            listItem.appendChild(checkbox);
+            
             taskList.appendChild(listItem);
         });
     }
 }
 
+window.onload = function() {
+    loadTasks();
+}
 const btn_salvar = document.querySelector('.salvar')
 btn_salvar.addEventListener('click', () => {
     criarTarefa()
 })
-
